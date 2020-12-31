@@ -65,12 +65,11 @@ public class Motor : MonoBehaviour
     }
 
     public void Reposition(float newAngle)
-    {
-        /*
+    {        
         if (newAngle < MinRot || newAngle > MaxRot)
         {
             return;
-        }*/
+        }
 
         switch (thisAxis)
         {

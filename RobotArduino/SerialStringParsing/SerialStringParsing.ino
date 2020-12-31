@@ -3,12 +3,14 @@
 String serialMessage = "";
 
 //Max number of characters expected, including delimiters
-const int MaxMessageLength = 42;
+const int MaxMessageLength = 18;
+String results[6];
+int intResults[6];
 
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Ready to recieve!");
 }
 
@@ -32,12 +34,19 @@ void ParseMessage()
   
   char *messagePointer = messageArray;
   char *result;
-  
+
+  int counter = 0;
   while ((result = strtok_r(messagePointer, ",", &messagePointer))!= NULL)
   {
-    Serial.println(result);
+    results[counter] = result;
+    counter++;
+  }
+  
+  for(int i = 0; i < 6; i++)
+  {
+    intResults[i] = results[i].toInt();
   }
   
   //Runtime for method
-  Serial.println(String(millis() - time));
+  Serial.println("Time was: " + String(millis() - time));
 }
