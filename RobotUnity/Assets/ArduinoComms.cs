@@ -6,7 +6,8 @@ using System.IO.Ports;
 public class ArduinoComms : MonoBehaviour
 {
     [Header("Messages")]
-    [Range(1,90)] public int[] Messages;
+    [Range(10, 170)] public int[] Messages;
+    [Range(10, 170)] public int[] HomeValues;
 
     [Space(5)][Header("Characteristics")]
     public float ResetSpeed = 1;
@@ -20,6 +21,13 @@ public class ArduinoComms : MonoBehaviour
 
     public bool Home = false;
     public bool SendString;
+
+    public static ArduinoComms instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -51,7 +59,8 @@ public class ArduinoComms : MonoBehaviour
         else
         {
             //message = IntMessage.ToString();
-            message = $"{Messages[0]},{Messages[1]},{Messages[2]},{Messages[3]},{Messages[4]},{Messages[5]}";
+            message = $"{Messages[5]},{Messages[4]},{Messages[3]},{Mathf.Abs(Messages[2] - 170)},{Mathf.Abs(Messages[1] - 170)},{Mathf.Abs(Messages[0] - 170)}";
+            Debug.LogWarning(message);
         }
 
         if (ArduinoChannel.IsOpen)
@@ -73,7 +82,7 @@ public class ArduinoComms : MonoBehaviour
     {
         for (int i = 0; i < Messages.Length; i++)
         {
-            float homeFloat = Mathf.Lerp(Messages[i], 90, Time.deltaTime * ResetSpeed);
+            float homeFloat = Mathf.Lerp(Messages[i], HomeValues[i], Time.deltaTime * ResetSpeed);
             Messages[i] = Mathf.RoundToInt(homeFloat);
         }
     }

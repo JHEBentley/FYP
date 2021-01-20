@@ -41,6 +41,7 @@ public class ArmManager : MonoBehaviour
         MotorAngles = angles;
     }
 
+    
     void Update()
     {
         //JB: If the arm has has gotten close enough to the target, stop calculating IK

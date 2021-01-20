@@ -2,10 +2,16 @@
 
 public class Motor : MonoBehaviour
 {
+    public int MotorID;
+    public int Offset;
+    private ArduinoComms commsScript;
+
     public Vector3 StartPos;
 
     public float MinRot = -180;
     public float MaxRot = 180;
+
+    public bool IsOn = true;
 
     public enum Axis
     {
@@ -20,6 +26,8 @@ public class Motor : MonoBehaviour
 
     private void Awake()
     {
+        commsScript = ArduinoComms.instance;
+
         StartPos = transform.localPosition;
 
         switch (thisAxis)
@@ -65,11 +73,22 @@ public class Motor : MonoBehaviour
     }
 
     public void Reposition(float newAngle)
-    {        
+    {
+        /*
         if (newAngle < MinRot || newAngle > MaxRot)
         {
             return;
         }
+        */
+
+        if (!IsOn)
+        {
+            return;
+        }
+
+        newAngle = Mathf.Clamp(newAngle, MinRot, MaxRot);
+
+        commsScript.Messages[MotorID] = Mathf.RoundToInt(newAngle) + Offset;
 
         switch (thisAxis)
         {

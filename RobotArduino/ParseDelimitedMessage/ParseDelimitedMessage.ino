@@ -17,7 +17,7 @@ int oldData[] = {90,90,90,90,90,90};
 //Parsing stuff
 String serialMessage = "";
 //Max number of characters expected, including delimiters
-const int MaxMessageLength = 18;
+const int MaxMessageLength = 24;
 String results[6];
 int intResults[6];
 
