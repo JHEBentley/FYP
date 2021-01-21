@@ -12,6 +12,7 @@ public class Motor : MonoBehaviour
     public float MaxRot = 180;
 
     public bool IsOn = true;
+    public bool invert;
 
     public enum Axis
     {
@@ -88,7 +89,15 @@ public class Motor : MonoBehaviour
 
         newAngle = Mathf.Clamp(newAngle, MinRot, MaxRot);
 
-        commsScript.Messages[MotorID] = Mathf.RoundToInt(newAngle) + Offset;
+        if (invert)
+        {
+            commsScript.Messages[MotorID] = Mathf.RoundToInt(Mathf.Abs(MaxRot - newAngle)) + Offset;
+        }
+
+        else
+        {
+            commsScript.Messages[MotorID] = Mathf.RoundToInt(newAngle) + Offset;
+        }        
 
         switch (thisAxis)
         {

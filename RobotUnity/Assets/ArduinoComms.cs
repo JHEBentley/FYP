@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
+using System;
 
 public class ArduinoComms : MonoBehaviour
 {
@@ -15,8 +16,8 @@ public class ArduinoComms : MonoBehaviour
     public string COMChannel;
     public int BaudRate = 9600;
     SerialPort ArduinoChannel;
+    private bool SerialActive;
 
-    public bool Toggle;
     public string StringMessage;
 
     public bool Home = false;
@@ -32,18 +33,20 @@ public class ArduinoComms : MonoBehaviour
     void Start()
     {
         ArduinoChannel = new SerialPort(COMChannel, BaudRate);
+        OpenArduinoChannel();
+    }
 
+    void OpenArduinoChannel()
+    {
         ArduinoChannel.Open();
         ArduinoChannel.ReadTimeout = 1;
+        ArduinoChannel.WriteTimeout = 500;
+
+        SerialActive = true;
     }
 
     void Update()
     {
-        if (Toggle)
-        {
-            StringMessage = "Forced message";
-        }
-
         if (Home)
         {
             ResetPos();
@@ -60,22 +63,41 @@ public class ArduinoComms : MonoBehaviour
         {
             //message = IntMessage.ToString();
             message = $"{Messages[5]},{Messages[4]},{Messages[3]},{Mathf.Abs(Messages[2] - 170)},{Mathf.Abs(Messages[1] - 170)},{Mathf.Abs(Messages[0] - 170)}";
-            Debug.LogWarning(message);
+            Debug.Log(message);
         }
 
-        if (ArduinoChannel.IsOpen)
+        //UnityEngine.Profiling.Profiler.BeginSample("Send Messages");
+        SendMessageSerial(message);
+        //UnityEngine.Profiling.Profiler.EndSample();
+
+    }
+
+    void SendMessageSerial(string message)
+    {
+        if (ArduinoChannel.IsOpen && SerialActive)
         {
             try
             {
                 ArduinoChannel.WriteLine(message);
-                Debug.Log(ArduinoChannel.ReadLine());
             }
 
-            catch(System.Exception)
+            catch (Exception ex)
             {
-                //Debug.LogWarning("Message could not be written to Arduino!");
+                Debug.Log("<<< catch : " + ex.ToString());
+
+                SerialActive = false;
+                StartCoroutine(OnConnectionFail());                
             }
         }
+    }
+
+    IEnumerator OnConnectionFail()
+    {
+        ArduinoChannel.Close();
+
+        yield return new WaitForSeconds(0.1f);
+
+        OpenArduinoChannel();
     }
 
     void ResetPos()

@@ -170,6 +170,7 @@ GameObject:
   - component: {fileID: 115148192}
   - component: {fileID: 115148191}
   - component: {fileID: 115148196}
+  - component: {fileID: 115148197}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -189,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f6b9fce7339d9947b5be324742d042d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1174924031}
+  target: {fileID: 730013745}
   Motors:
   - {fileID: 1986618920}
   - {fileID: 1714550881}
@@ -273,7 +274,7 @@ Transform:
   m_LocalScale: {x: 2, y: 0.6, z: 2}
   m_Children: []
   m_Father: {fileID: 364250877}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &115148196
 MonoBehaviour:
@@ -287,15 +288,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b853e350c4b6504419a31061f77ca27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Messages: 440000001e0000006c0000007a0000005900000058000000
+  Messages: 440000001e0000006c0000007a0000005900000089000000
   HomeValues: 440000001e0000006c0000007a000000600000005a000000
   ResetSpeed: 5
   COMChannel: COM6
   BaudRate: 9600
-  Toggle: 0
   StringMessage: 
   Home: 0
   SendString: 0
+--- !u!114 &115148197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115148190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb6a91d21fc8224fb1b4dfa086b325a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightControllerTransform: {fileID: 730013745}
+  WristID: 3
+  neckID: 4
+  jawID: 5
+  wristOffset: 0
 --- !u!1 &241497561
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,9 +465,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1174924031}
   - {fileID: 115148195}
   - {fileID: 1986618924}
+  - {fileID: 1174924031}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1649,6 +1666,7 @@ MonoBehaviour:
   MinRot: 0
   MaxRot: 180
   IsOn: 1
+  invert: 0
   thisAxis: 0
   quatAxis: {x: 0, y: 0, z: 0}
 --- !u!135 &1129082010
@@ -1893,11 +1911,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174924027}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.43, y: 5.71, z: 2.97}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: -1.77, y: 5.87, z: 3.4}
+  m_LocalScale: {x: 0.49999997, y: 0.49999997, z: 0.49999997}
   m_Children: []
   m_Father: {fileID: 364250877}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1174924032
 MonoBehaviour:
@@ -2079,6 +2097,7 @@ MonoBehaviour:
   MinRot: 10
   MaxRot: 170
   IsOn: 0
+  invert: 0
   thisAxis: 2
   quatAxis: {x: 0, y: 0, z: 0}
 --- !u!135 &1299010591
@@ -2418,13 +2437,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MotorID: 2
-  Offset: 83
-  StartPos: {x: 0, y: 0, z: 0}
+  Offset: -53
+  StartPos: {x: 0, y: 2.7599998, z: 0}
   MinRot: 10
   MaxRot: 170
   IsOn: 1
+  invert: 1
   thisAxis: 2
-  quatAxis: {x: 0, y: 0, z: 0}
+  quatAxis: {x: 0, y: 0, z: 1}
 --- !u!135 &1654826820
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2523,6 +2543,7 @@ MonoBehaviour:
   MinRot: 10
   MaxRot: 170
   IsOn: 1
+  invert: 0
   thisAxis: 2
   quatAxis: {x: 0, y: 0, z: 0}
 --- !u!135 &1714550882
@@ -2892,6 +2913,7 @@ MonoBehaviour:
   MinRot: 10
   MaxRot: 170
   IsOn: 1
+  invert: 0
   thisAxis: 1
   quatAxis: {x: 0, y: 0, z: 0}
 --- !u!135 &1986618921
@@ -2967,7 +2989,7 @@ Transform:
   m_Children:
   - {fileID: 1714550885}
   m_Father: {fileID: 364250877}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2023253728
 GameObject:
@@ -3022,7 +3044,8 @@ MonoBehaviour:
   StartPos: {x: 0, y: 0, z: 0}
   MinRot: 10
   MaxRot: 170
-  IsOn: 1
+  IsOn: 0
+  invert: 0
   thisAxis: 1
   quatAxis: {x: 0, y: 0, z: 0}
 --- !u!135 &2023253731
