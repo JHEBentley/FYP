@@ -190,16 +190,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f6b9fce7339d9947b5be324742d042d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 730013745}
-  Motors:
+  target: {fileID: 1174924031}
+  motors:
   - {fileID: 1986618920}
   - {fileID: 1714550881}
   - {fileID: 1654826819}
   - {fileID: 2023253730}
   - {fileID: 1299010590}
-  MotorAngles: []
-  SamplingDistance: 10
-  Speed: 50
+  motorAxes: []
+  samplingOffset: 10
+  speed: 50
   distanceTolerance: 0.01
 --- !u!136 &115148192
 CapsuleCollider:
@@ -283,7 +283,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 115148190}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b853e350c4b6504419a31061f77ca27f, type: 3}
   m_Name: 
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 115148190}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bb6a91d21fc8224fb1b4dfa086b325a, type: 3}
   m_Name: 

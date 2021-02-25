@@ -5,92 +5,88 @@ using UnityEngine;
 public class ArmManager : MonoBehaviour
 {
     public Transform target;
-    public Motor[] Motors;
-    public float[] MotorAngles;
+    public Motor[] motors;
+    public float[] motorAxes;
     [Space(10)]
-    [Range(1,20)]
-    public int SamplingDistance;
-    public int Speed;
+    [Range(1, 20)]
+    public int samplingOffset;
+    public int speed;
     [Tooltip("0.01 for very accurate, 0.5 for actual application.")]
     public float distanceTolerance;
 
 
     void Start()
     {
-        float[] angles = new float[Motors.Length];
+        float[] axes = new float[motors.Length];
 
-        for (int i = 0; i < Motors.Length; i++)
+        //Define which axis each motor is restricted to
+        for (int i = 0; i < motors.Length; i++)
         {
-            switch (Motors[i].GetAxis())
+            switch (motors[i].GetAxis())
             {
                 case 'x':
-                    angles[i] = Motors[i].transform.localRotation.eulerAngles.x;
+                    axes[i] = motors[i].transform.localRotation.eulerAngles.x;
                     break;
                 case 'y':
-                    angles[i] = Motors[i].transform.localRotation.eulerAngles.y;
+                    axes[i] = motors[i].transform.localRotation.eulerAngles.y;
                     break;
                 case 'z':
-                    angles[i] = Motors[i].transform.localRotation.eulerAngles.z;
+                    axes[i] = motors[i].transform.localRotation.eulerAngles.z;
                     break;
                 default:
-                    angles[i] = 0;
+                    axes[i] = 0;
                     break;
             }
         }
 
-        MotorAngles = angles;
+        motorAxes = axes;
     }
 
-    
+
     void Update()
     {
-        //JB: If the arm has has gotten close enough to the target, stop calculating IK
-        if (DistanceFromTarget(target.position, MotorAngles) > distanceTolerance)
-        {
-            for (int i = Motors.Length - 1; i >= 0; i--)
-            {
-                //Calculate inverse kinetics using gradient descent
-                float gradient = GradientDescent(target.position, MotorAngles, i);
-                MotorAngles[i] -= Speed * gradient;
+        Vector3 basePosition = motors[0].transform.position;
 
-                Motors[i].Reposition(MotorAngles[i]);
+        //If the effector has has gotten close enough to the target, stop calculating IK
+        if (Vector3.Distance(GetNewEffectorTarget(motorAxes, basePosition, Quaternion.identity), target.position) > distanceTolerance)
+        {
+            //For each motor
+            for (int i = motors.Length - 1; i >= 0; i--)
+            {
+                //Store the motor angle values so that they can be restored after the theoretical calulations are finished
+                //Otherwise the chain will begin to move uncontrollably
+                float valueHolder = motorAxes[i];
+
+                //Calculate partial gradient
+                //Vector3.Distance is a built in function which calculates the distance between two points using cartesian coordinates
+                float d1 = Vector3.Distance(GetNewEffectorTarget(motorAxes, basePosition, Quaternion.identity), target.position);
+                motorAxes[i] += samplingOffset;
+                float d2 = Vector3.Distance(GetNewEffectorTarget(motorAxes, basePosition, Quaternion.identity), target.position);
+
+                float partialGradient = (d2 - d1) / samplingOffset;
+
+                //Restore original angle values which have not been altered
+                motorAxes[i] = valueHolder;
+
+                //Gradient descent calculation
+                motorAxes[i] -= speed * partialGradient;
+
+                //Instruct motors to reposition themsevles
+                motors[i].Reposition(motorAxes[i]);
             }
         }
     }
 
-    public float GradientDescent(Vector3 target, float[] angles, int i)
+    public Vector3 GetNewEffectorTarget(float[] angles, Vector3 targetPos, Quaternion currentRot)
     {
-        float tempAngle = angles[i];
-
-        // Gradient : [F(x+SamplingDistance) - F(x)] / h
-        float f_x = DistanceFromTarget(target, angles);
-        angles[i] += SamplingDistance;
-        float f_x_plus_d = DistanceFromTarget(target, angles);
-        float gradient = (f_x_plus_d - f_x) / SamplingDistance;
-
-        angles[i] = tempAngle;
-        return gradient;
-    }
-
-    public float DistanceFromTarget(Vector3 target, float[] angles)
-    {
-        return Vector3.Distance(FK_Update(angles), target);
-    }
-
-    public Vector3 FK_Update(float[] angles)
-    {
-        Vector3 lastRot = Motors[0].transform.position;
-        Quaternion currentRot = Quaternion.identity;
-
-        for (int i = 1; i < Motors.Length; i++)
+        for (int i = 1; i < motors.Length; i++)
         {
-            int currentIndex = i - 1;
+            int lastIndex = i - 1;
 
-            currentRot = currentRot * Quaternion.AngleAxis(angles[currentIndex], Motors[currentIndex].quatAxis);
-            Vector3 nextRot = lastRot + currentRot * Motors[i].StartPos;
-
-            lastRot = nextRot;
+            currentRot = currentRot * Quaternion.AngleAxis(angles[lastIndex], motors[lastIndex].quatAxis);
+            targetPos = targetPos + currentRot * motors[i].StartPos;
         }
-        return lastRot;
+
+        return targetPos;
     }
 }

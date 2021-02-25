@@ -46,7 +46,7 @@ public class Motor : MonoBehaviour
     }
 
     /// <summary>
-    /// JB: Returns a char from the Motor class
+    /// Returns a char from the Motor class
     /// <para>
     /// The motor returns it's assign cartesian axis as a char to avoid sharing Enum configuration.
     /// </para>
