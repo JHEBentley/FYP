@@ -1,11 +1,8 @@
 /*
  * Reads the serial feed and parses ints, then writes this in as the servo motor position.
  * Does this for a string of values with "," delimiters.
- * Can be used in cnjunction with the Arduino comms script in Unity.
- * Note, the motor can only move between positions 0-90. * 
+ * Can be used in conjunction with the Arduino comms script in Unity.
  */
-
-
 
 #include <Servo.h>;
 

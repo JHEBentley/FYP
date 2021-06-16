@@ -5,15 +5,18 @@ using UnityEngine.XR;
 
 public class XRArmManager : MonoBehaviour
 {
+    //Reference the right controller
     private InputDevice rightController;
     public Transform rightControllerTransform;
 
+    //Get the IDs for each of the required motors
     public int WristID;
     public int neckID;
     public int jawID;
 
     private ArduinoComms commsScript;
 
+    //Determines the oritentation of the controller in case of any sudden movements
     private bool UpStateLastUp = true;
     [SerializeField]
     private int wristOffset;
@@ -34,22 +37,25 @@ public class XRArmManager : MonoBehaviour
 
         if (presentDevices.Count > 0)
         {
+            //right controller should be the first (and only) device of this type present
             rightController = presentDevices[0];
         }
     }
 
     void Update()
     {
+        //If we don't have a controller to track, find one and return for this frame
         if (rightController.name == null)
         {
             FindController();
             return;
         }
 
+        //The neck and the wrist are controlled by the rotation of the controller in the up axis and right axis respectively
         commsScript.Messages[neckID] = Mathf.RoundToInt(GetControllerUpRotation(rightControllerTransform));
         commsScript.Messages[WristID] = Mathf.RoundToInt(GetControllerRightRotation(rightControllerTransform));
-        //Debug.Log(rightControllerTransform.rotation);
 
+        //The jaws are controlled by hpw fair in the trigger has been pulled (bwhich is a float clamped between 0 and 1
         float triggerVal = GetTriggerValue(rightController);
 
         //Set jaw position based on trigger value
@@ -60,6 +66,7 @@ public class XRArmManager : MonoBehaviour
 
     private float GetTriggerValue(InputDevice controller)
     {
+        //Get the state of the trigger, should be between 0 and 1
         controller.TryGetFeatureValue(CommonUsages.trigger, out float triggerState);
 
         return triggerState;

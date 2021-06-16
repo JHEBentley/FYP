@@ -45,6 +45,7 @@ void ParseMessage()
   for(int i = 0; i < 6; i++)
   {
     intResults[i] = results[i].toInt();
+    Serial.write(intResults[i]);
   }
   
   //Runtime for method
